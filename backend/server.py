@@ -221,7 +221,11 @@ async def get_orders(user_id: Optional[str] = None, status: Optional[str] = None
     
     orders = []
     async for order in db.orders.find(query):
-        orders.append(order)
+        # Convert MongoDB document to dict and remove ObjectId
+        order_dict = dict(order)
+        if '_id' in order_dict:
+            del order_dict['_id']
+        orders.append(order_dict)
     return {"orders": orders}
 
 # Cab Service Management
