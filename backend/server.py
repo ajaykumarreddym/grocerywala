@@ -229,7 +229,11 @@ async def get_orders(user_id: Optional[str] = None, status: Optional[str] = None
 async def get_cab_services():
     services = []
     async for service in db.cab_services.find({"is_active": True}):
-        services.append(service)
+        # Convert MongoDB document to dict and remove ObjectId
+        service_dict = dict(service)
+        if '_id' in service_dict:
+            del service_dict['_id']
+        services.append(service_dict)
     return {"services": services}
 
 @app.post("/api/cab-bookings")
