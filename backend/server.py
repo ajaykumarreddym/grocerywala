@@ -187,7 +187,11 @@ async def get_products(store_id: Optional[str] = None, category: Optional[str] =
     
     products = []
     async for product in db.products.find(query):
-        products.append(product)
+        # Convert MongoDB document to dict and remove ObjectId
+        product_dict = dict(product)
+        if '_id' in product_dict:
+            del product_dict['_id']
+        products.append(product_dict)
     return {"products": products}
 
 @app.post("/api/products")
