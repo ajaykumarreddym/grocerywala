@@ -150,7 +150,11 @@ async def get_user(user_id: str):
     user = await db.users.find_one({"id": user_id})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return user
+    # Convert MongoDB document to dict and remove ObjectId
+    user_dict = dict(user)
+    if '_id' in user_dict:
+        del user_dict['_id']
+    return user_dict
 
 # Store Management
 @app.get("/api/stores")
