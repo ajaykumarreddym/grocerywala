@@ -266,7 +266,11 @@ async def get_handyman_services(category: Optional[str] = None):
     
     services = []
     async for service in db.handyman_services.find(query):
-        services.append(service)
+        # Convert MongoDB document to dict and remove ObjectId
+        service_dict = dict(service)
+        if '_id' in service_dict:
+            del service_dict['_id']
+        services.append(service_dict)
     return {"services": services}
 
 @app.post("/api/handyman-bookings")
