@@ -258,7 +258,11 @@ async def get_cab_bookings(user_id: Optional[str] = None, status: Optional[str] 
     
     bookings = []
     async for booking in db.cab_bookings.find(query):
-        bookings.append(booking)
+        # Convert MongoDB document to dict and remove ObjectId
+        booking_dict = dict(booking)
+        if '_id' in booking_dict:
+            del booking_dict['_id']
+        bookings.append(booking_dict)
     return {"bookings": bookings}
 
 # Handyman Services
