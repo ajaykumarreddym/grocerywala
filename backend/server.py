@@ -161,7 +161,11 @@ async def get_stores(category: Optional[str] = None):
     
     stores = []
     async for store in db.stores.find(query):
-        stores.append(store)
+        # Convert MongoDB document to dict and remove ObjectId
+        store_dict = dict(store)
+        if '_id' in store_dict:
+            del store_dict['_id']
+        stores.append(store_dict)
     return {"stores": stores}
 
 @app.post("/api/stores")
