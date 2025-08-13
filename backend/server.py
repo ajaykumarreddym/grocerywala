@@ -299,7 +299,11 @@ async def get_handyman_bookings(user_id: Optional[str] = None, status: Optional[
     
     bookings = []
     async for booking in db.handyman_bookings.find(query):
-        bookings.append(booking)
+        # Convert MongoDB document to dict and remove ObjectId
+        booking_dict = dict(booking)
+        if '_id' in booking_dict:
+            del booking_dict['_id']
+        bookings.append(booking_dict)
     return {"bookings": bookings}
 
 # Analytics & Dashboard
